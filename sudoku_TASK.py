@@ -12,6 +12,7 @@ https://www.sudoku.ws/hard-1.htm as an example.
 import sys
 sys.path.append("./python-constraint-1.2")
 import constraint as csp
+import numpy as np
 
 # ------------------------------------------------------------------------------
 # sudoku to solve (add "0" where no number is given)
@@ -25,12 +26,22 @@ riddle = [[0,0,0,2,0,0,0,6,3],
              [0,2,6,3,0,0,5,0,0],
              [5,0,3,7,0,0,0,0,8],
              [4,7,0,0,0,1,0,0,0]]
+"""riddle_nur_eis_leer = [[5,3,4,6,7,8,9,1,2],
+          [6,7,2,1,9,5,3,4,8],
+          [1,9,8,3,4,2,5,6,7],
+          [8,5,9,7,6,1,4,2,3],
+          [4,2,6,8,5,3,7,9,1],
+          [7,1,3,9,2,4,8,5,6],
+          [9,6,1,5,3,7,2,8,4],
+          [2,8,7,4,1,9,6,3,5],
+          [3,4,5,2,8,6,1,7,0]]"""
 
 # ------------------------------------------------------------------------------
 # create helpful lists of variable names
 # ------------------------------------------------------------------------------
 rownames = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
 colnames = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+domains = list(range(1,10))
 
 rows = []
 for i in rownames:
@@ -60,12 +71,33 @@ for x in range(3):  # over rows of boxes
 # formulate sudoku as CSP
 # ------------------------------------------------------------------------------
 sudoku = csp.Problem()
+#sudoku.addVariables([i + j for i in rownames for j in colnames], domains)
 
 
+#for i, j in shape(riddle)
+#sudoku.addConstraint(lamdba a)
+
+for index, x in np.ndenumerate(riddle):
+    d = domains
+    if x != 0:
+        d = [x]
+    sudoku.addVariable(""+rownames[index[0]]+colnames[index[1]], d)
+
+    #addConstraint(lambda a: a == x, ["a"])
+
+for i in range(9):
+    sudoku.addConstraint(csp.AllDifferentConstraint(), rows[i])
+    sudoku.addConstraint(csp.AllDifferentConstraint(), cols[i])
+    sudoku.addConstraint(csp.AllDifferentConstraint(), boxes[i])
+
+print("hello")
 
 # ------------------------------------------------------------------------------
 # solve CSP
 # ------------------------------------------------------------------------------
 solutions = sudoku.getSolutions()
 
+print(sorted(solutions[0].items()))
+
+print("finished")
 
