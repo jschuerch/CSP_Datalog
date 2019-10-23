@@ -99,5 +99,12 @@ solutions = sudoku.getSolutions()
 
 print(sorted(solutions[0].items()))
 
-print("finished")
-
+for solution in solutions:
+    print("===============================")
+    i = 0
+    for row in rows:
+        i += 1
+        print("| %d  %d  %d | %d  %d  %d | %d  %d  %d |" % tuple(solution[x] for x in row))
+        if i % 3 == 0 and i < 9:
+            print("|---------|---------|---------|")
+    print("===============================\n")
