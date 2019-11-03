@@ -90,8 +90,6 @@ for i in range(9):
     sudoku.addConstraint(csp.AllDifferentConstraint(), cols[i])
     sudoku.addConstraint(csp.AllDifferentConstraint(), boxes[i])
 
-print("hello")
-
 # ------------------------------------------------------------------------------
 # solve CSP
 # ------------------------------------------------------------------------------
