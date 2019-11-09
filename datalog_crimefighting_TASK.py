@@ -20,7 +20,7 @@ texts = pa.read_csv('texts.csv', sep='\t', encoding='utf-8')
 suspect = 'Quandt Katarina'
 company_Board = ['Soltau Kristine', 'Eder Eva', 'Michael Jill']
 
-pyDatalog.create_terms('knows','has_link','many_more_needed')
+pyDatalog.create_terms('knows','has_link','many_more_needed, X, Y, Z')
 pyDatalog.clear()
 
 # First, treat calls as simple social links (denoted as knows), that have no date
@@ -28,19 +28,19 @@ for i in range(0,50):
     +knows(calls.iloc[i,1], calls.iloc[i,2])
 
 
-
 # Task 1: Knowing someone is a bi-directional relationship -> define the predicate accordingly
+knows(X, Y) <= knows(Y, X)
 
-
-
+print(knows("Kretzer Julian", Y))
 
 # Task 2: Define the predicate has_link in a way that it is true if a connection exists (path of people knowing the next link)
+has_link
 # Hints:
 #   check if your predicate works: at least 1 of the following asserts should be true (2 if you read in all 150 communication records)
 #   (be aware of the unusual behaviour that if an assert evaluates as true, an exception is thrown)
-#   assert (has_link('Quandt Katarina', company_Board[0]) == ())
-#   assert (has_link('Quandt Katarina', company_Board[1]) == ())
-#   assert (has_link('Quandt Katarina', company_Board[2]) == ())
+#assert (has_link('Quandt Katarina', company_Board[0]) == ())
+#assert (has_link('Quandt Katarina', company_Board[1]) == ())
+#assert (has_link('Quandt Katarina', company_Board[2]) == ())
 
 
 
