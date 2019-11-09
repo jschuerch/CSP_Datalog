@@ -43,3 +43,24 @@ print
 print(net_salary['foo']==Y)
 print
 print(net_salary[Y]<50)
+
+# the tax rate for salaries above 0 is 33%, and above 100 is 50 %
+(tax_rate_for_salary_above[X] == 0.33) <= (0 <= X)
+(tax_rate_for_salary_above[X] == 0.50) <= (100 <= X)
+print(tax_rate_for_salary_above[70]==Y)
+print
+print(tax_rate_for_salary_above[150]==Y)
+
+# retract our previous definition of net_salary
+del net_salary[X]
+
+net_salary[X] = salary[X]*(1-tax_rate_for_salary_above[salary[X]])
+# give me all X and Y so that Y is the net salary of X
+print(net_salary[X]==Y)
+
+pyDatalog.create_terms('factorial, N')
+
+factorial[N] = N*factorial[N-1]
+factorial[1] = 1
+
+print(factorial[5]==N)
