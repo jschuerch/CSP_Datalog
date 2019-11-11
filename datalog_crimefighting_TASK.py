@@ -20,7 +20,7 @@ texts = pa.read_csv('texts.csv', sep='\t', encoding='utf-8')
 suspect = 'Quandt Katarina'
 company_Board = ['Soltau Kristine', 'Eder Eva', 'Michael Jill']
 
-pyDatalog.create_terms('knows','has_link','many_more_needed, X, Y, Z')
+pyDatalog.create_terms('knows','has_link','many_more_needed')
 pyDatalog.clear()
 
 # First, treat calls as simple social links (denoted as knows), that have no date
@@ -29,32 +29,26 @@ for i in range(0,50):
 
 
 # Task 1: Knowing someone is a bi-directional relationship -> define the predicate accordingly
+pyDatalog.create_terms('X, Y')
 knows(X, Y) <= knows(Y, X)
 
-#print(knows("Kretzer Julian", Y))
+# ze output
+#print("%s knows Y" % (suspect))
+#print(knows(suspect, Y))
 
 # Task 2: Define the predicate has_link in a way that it is true if a connection exists (path of people knowing the next link)
-
+pyDatalog.create_terms('Z')
 has_link(X,Y) <= knows(X,Y)
 has_link(X,Y) <= knows(X,Z) & has_link(Z,Y) & (X!=Y)
 
-#print (has_link("Quandt Katarina",Y))
-#print(has_link('Quandt Katarina', company_Board[0]))
-#[]
-#print(has_link('Quandt Katarina', company_Board[1]))
-#[()]
-#print(has_link('Quandt Katarina', company_Board[2]))
-#[()]
+#print (has_link(suspect,Y))
 
 # Hints:
 #   check if your predicate works: at least 1 of the following asserts should be true (2 if you read in all 150 communication records)
 #   (be aware of the unusual behaviour that if an assert evaluates as true, an exception is thrown)
-#assert (has_link('Quandt Katarina', company_Board[0]) == ()) --> false
-#assert (has_link('Quandt Katarina', company_Board[1]) == ()) --> true
-#assert (has_link('Quandt Katarina', company_Board[2]) == ()) --> true
-
-
-
+#assert (has_link('Quandt Katarina', company_Board[0]) == ()) # --> false []
+#assert (has_link('Quandt Katarina', company_Board[1]) == ()) # --> true  [()]
+#assert (has_link('Quandt Katarina', company_Board[2]) == ()) # --> true  [()]
 
 
 # Task 3: You already know that a connection exists; now find the concrete paths between the board members and the suspect
@@ -63,14 +57,38 @@ has_link(X,Y) <= knows(X,Z) & has_link(Z,Y) & (X!=Y)
 #   (X._not_in(P2)) is used to check whether x is not in path P2
 #   (P==P2+[Z]) declares P as a new path containing P2 and Z
 
+pyDatalog.create_terms('paths, P, P2')
 
+# The most general definition of the function is given first.
+# When searching for possible answers, pyDatalog begins with the last rule defined,
+# i.e. the more specific, and stops as soon as a valid answer is found for the function.
+# --> umgekehrt wie in prolog?
 
+#paths(X,Y,P) <= paths(X,Z,P2) & knows(Z,Y) & (X!=Y) & Z._not_in(P2) & (P==P2 + [Z]) # für paths isch das gange, aber für with len nöd...
+#vode hilfsssite... ?? werum X und Y nöd in P2?? paths(X, Y, P) <= paths(X, Z, P2) & knows(Z, Y) & (X != Y) & (X._not_in(P2)) & (Y._not_in(P2)) & (P == P2 + [Z])
+
+paths(X,Y,P) <= paths(X,Z,P2) & knows(Z,Y) & (X!=Y) & Y._not_in(P2) & Z._not_in(P2) & (P==P2 + [Z])
+paths(X,Y,P) <= knows(X,Y) & (P==[])
+
+# ze output
+"""for i in range(0,len(company_Board)):
+    print(company_Board[i])
+    print(paths(suspect, company_Board[i], P))"""
 
 # Task 4: There are too many paths. We are only interested in short paths.
 # Find all the paths between the suspect and the company board that contain five people or less
+pyDatalog.create_terms('paths_with_len, L, L2')
 
+#paths_with_len(X,Y,P,L) <= knows(X,Y) & paths_with_len(Z,Y,P2,L2) & (X!=Y) & Z._not_in(P2) & (P==[Z] + P2) & (L==L2 + 1) # gaht nöd?? :(
+#paths_with_len(X,Y,P,L) <= paths_with_len(X,Z,P2,L2) & knows(Z,Y) & (X!=Y) & X._not_in(P2) & Y._not_in(P2) & (P==P2 + [Z]) & (L==L2 + 1) # wenis übernimm
 
+paths_with_len(X,Y,P,L) <= paths_with_len(X,Z,P2,L2) & knows(Z,Y) & (X!=Y) & Y._not_in(P2) & Z._not_in(P2) & (P==P2 + [Z]) & (L==L2 + 1)
+paths_with_len(X,Y,P,L) <= knows(X,Y) & (P==[]) & (L==0)
 
+# ze output
+"""for i in range(0,len(company_Board)):
+    print(company_Board[i])
+    print(paths_with_len(suspect, company_Board[i], P, L) & (L<=5))"""
 
 # ---------------------------------------------------------------------------
 # Call-Data analysis:
@@ -96,17 +114,69 @@ called(X,Y,Z) <= called(Y,X,Z) # calls are bi-directional
 # Hints:
 #   You are allowed to naively compare the dates lexicographically using ">" and "<";
 #   it works in this example (but is evil in general)
+pyDatalog.create_terms('A, Z1, Z2')
 
+has_link(X,Y,Z) <= called(X,Y,Z)
+has_link(X,Y,Z) <= called(X,A,Z) & has_link(A,Y,Z2) & (X!=Y) & (Z>Z2)
 
-
+print (has_link(suspect,Y,Z))
 
 # Task 6: Find all the communication paths that lead to the suspect (with the restriction that the dates have to be ordered correctly)
 
+paths_with_len(X,Y,Z,P,L) <= paths_with_len(X,A,Z,P2,L2) & called(A,Y,Z2) & (X!=Y) & (Z>Z2) & Y._not_in(P2) & A._not_in(P2) & (P==P2 + [A] + [Z2]) & (L==L2 + 1)
+paths_with_len(X,Y,Z,P,L) <= called(X,Y,Z) & (P==[]) & (L==0)
 
+print("\n\nSuspicious Trace:")
+# ze output
+for i in range(0,len(company_Board)):
+    print()
+    print(company_Board[i])
+    print(paths_with_len(suspect, company_Board[i], Z, P, L))
 
 
 # Final task: after seeing this information, who, if anybody, do you think gave a tip to the suspect?
 
+
+"""
+Wenn (Z>Z2)         #ich glaub das isch richtig? will es gahz ja en tipp vo öpperem zude Kati
+Soltau Kristine
+[]
+Eder Eva
+Z         | P                                    | L
+----------|--------------------------------------|--
+16.2.2017 | ('Scheunemann Dario', 'Egerer Leni') | 2
+Michael Jill
+[]
+
+Soltau Kristine
+[]
+Eder Eva
+Z         | P                                                              | L
+----------|----------------------------------------------------------------|--
+16.2.2017 | ('Scheunemann Dario', '13.2.2017', 'Egerer Leni', '11.2.2017') | 2
+16.2.2017 | ('Scheunemann Dario', '13.2.2017', 'Egerer Leni', '12.2.2017') | 2
+Michael Jill
+[]
+
+Wenn (Z<Z2)
+Soltau Kristine
+[]
+Eder Eva
+[]
+Michael Jill
+Z         | P                                                    | L
+----------|------------------------------------------------------|--
+16.2.2017 | ('Scheunemann Dario', 'Kretzer Julian', 'Walz Grit') | 3
+
+Soltau Kristine
+[]
+Eder Eva
+[]
+Michael Jill
+Z         | P                                                                                          | L
+----------|--------------------------------------------------------------------------------------------|--
+16.2.2017 | ('Scheunemann Dario', '19.2.2017', 'Kretzer Julian', '17.2.2017', 'Walz Grit', '4.2.2017') | 3
+"""
 
 
 
