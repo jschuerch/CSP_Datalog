@@ -31,16 +31,28 @@ for i in range(0,50):
 # Task 1: Knowing someone is a bi-directional relationship -> define the predicate accordingly
 knows(X, Y) <= knows(Y, X)
 
-print(knows("Kretzer Julian", Y))
+#print(knows("Kretzer Julian", Y))
 
 # Task 2: Define the predicate has_link in a way that it is true if a connection exists (path of people knowing the next link)
-has_link
+
+has_link(X,Y) <= knows(X,Y)
+has_link(X,Y) <= knows(X,Z) & has_link(Z,Y) & (X!=Y)
+
+#print (has_link("Quandt Katarina",Y))
+#print(has_link('Quandt Katarina', company_Board[0]))
+#[]
+#print(has_link('Quandt Katarina', company_Board[1]))
+#[()]
+#print(has_link('Quandt Katarina', company_Board[2]))
+#[()]
+
 # Hints:
 #   check if your predicate works: at least 1 of the following asserts should be true (2 if you read in all 150 communication records)
 #   (be aware of the unusual behaviour that if an assert evaluates as true, an exception is thrown)
-#assert (has_link('Quandt Katarina', company_Board[0]) == ())
-#assert (has_link('Quandt Katarina', company_Board[1]) == ())
-#assert (has_link('Quandt Katarina', company_Board[2]) == ())
+#assert (has_link('Quandt Katarina', company_Board[0]) == ()) --> false
+#assert (has_link('Quandt Katarina', company_Board[1]) == ()) --> true
+#assert (has_link('Quandt Katarina', company_Board[2]) == ()) --> true
+
 
 
 
