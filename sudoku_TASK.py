@@ -13,6 +13,7 @@ import sys
 sys.path.append("./python-constraint-1.2")
 import constraint as csp
 import numpy as np
+import time
 
 # ------------------------------------------------------------------------------
 # sudoku to solve (add "0" where no number is given)
@@ -70,23 +71,31 @@ for x in range(3):  # over rows of boxes
 # ------------------------------------------------------------------------------
 # formulate sudoku as CSP
 # ------------------------------------------------------------------------------
-sudoku = csp.Problem()
+iterations = 1
+start = time.time()
+print(start)
+for i in range(iterations):
 
-for index, x in np.ndenumerate(riddle):
-    d = domains
-    if x != 0:
-        d = [x]
-    sudoku.addVariable(""+rownames[index[0]]+colnames[index[1]], d)
+    sudoku = csp.Problem()
 
-for i in range(9):
-    sudoku.addConstraint(csp.AllDifferentConstraint(), rows[i])
-    sudoku.addConstraint(csp.AllDifferentConstraint(), cols[i])
-    sudoku.addConstraint(csp.AllDifferentConstraint(), boxes[i])
+    for index, x in np.ndenumerate(riddle):
+        d = domains
+        if x != 0:
+            d = [x]
+        sudoku.addVariable(""+rownames[index[0]]+colnames[index[1]], d)
 
-# ------------------------------------------------------------------------------
-# solve CSP
-# ------------------------------------------------------------------------------
-solutions = sudoku.getSolutions()
+    for i in range(9):
+        sudoku.addConstraint(csp.AllDifferentConstraint(), rows[i])
+        sudoku.addConstraint(csp.AllDifferentConstraint(), cols[i])
+        sudoku.addConstraint(csp.AllDifferentConstraint(), boxes[i])
+
+    # ------------------------------------------------------------------------------
+    # solve CSP
+    # ------------------------------------------------------------------------------
+    solutions = sudoku.getSolutions()
+
+duration = time.time() - start
+print("Average time (%d iterations): %f seconds" % (iterations, (duration/iterations)))
 
 print(sorted(solutions[0].items()))
 
