@@ -1,0 +1,8 @@
+Domains angepasst:
+Average time (1000  iterations): 0.020803
+Average time (10000 iterations): 0.018892 seconds
+
+Constraints hinzugefügt:
+Average time (1000  iterations): 0.018589
+Average time (10000 iterations): 0.017624 seconds
+
