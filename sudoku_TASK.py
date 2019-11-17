@@ -71,19 +71,12 @@ for x in range(3):  # over rows of boxes
 # formulate sudoku as CSP
 # ------------------------------------------------------------------------------
 sudoku = csp.Problem()
-#sudoku.addVariables([i + j for i in rownames for j in colnames], domains)
-
-
-#for i, j in shape(riddle)
-#sudoku.addConstraint(lamdba a)
 
 for index, x in np.ndenumerate(riddle):
     d = domains
     if x != 0:
         d = [x]
     sudoku.addVariable(""+rownames[index[0]]+colnames[index[1]], d)
-
-    #addConstraint(lambda a: a == x, ["a"])
 
 for i in range(9):
     sudoku.addConstraint(csp.AllDifferentConstraint(), rows[i])
