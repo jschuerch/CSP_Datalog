@@ -99,14 +99,13 @@ date_shares_bought = '23.2.2017'
 pyDatalog.create_terms('called,texted')
 pyDatalog.clear()
 
-for i in range(0,50): # calls
+for i in range(0,60): # calls
     +called(calls.iloc[i,1], calls.iloc[i,2],calls.iloc[i,3])
 
-for i in range(0,50): # texts
+for i in range(0,60): # texts
     +texted(texts.iloc[i,1], texts.iloc[i,2],texts.iloc[i,3])
 
 called(X,Y,Z) <= called(Y,X,Z) # calls are bi-directional
-
 
 
 # Task 5: Again we are interested in links, but this time a connection is only valid if the links are descending in date; 
@@ -114,28 +113,42 @@ called(X,Y,Z) <= called(Y,X,Z) # calls are bi-directional
 # Hints:
 #   You are allowed to naively compare the dates lexicographically using ">" and "<";
 #   it works in this example (but is evil in general)
-pyDatalog.create_terms('A, Z1, Z2')
+pyDatalog.create_terms('A, Z1, Z2, D, D2')
 
+knows(X,Y,Z) <= called(Y,X,Z)# & (Z>=date_board_decision) & (Z<=date_shares_bought)
+knows(X,Y,Z) <= texted(Y,X,Z)# & (Z>=date_board_decision) & (Z<=date_shares_bought)
+
+"""
 has_link(X,Y,Z) <= texted(X,Y,Z)
 #has_link(X,Y,Z) <= called(X,Y,Z)
 has_link(X,Y,Z) <= texted(X,A,Z) & has_link(A,Y,Z2) & (X!=Y) & (Z<Z2)
 #has_link(X,Y,Z) <= called(X,A,Z) & has_link(A,Y,Z2) & (X!=Y) & (Z<Z2)
+"""
+has_link(X,Y,Z) <= knows(X,Y,Z)
+has_link(X,Y,Z) <= knows(X,A,Z) & has_link(A,Y,Z2) & (X!=Y) & (Z>Z2)
 
 print (has_link(suspect,Y,Z))
 
 # Task 6: Find all the communication paths that lead to the suspect (with the restriction that the dates have to be ordered correctly)
-
+"""
 paths_with_len(X,Y,Z,P,L) <= paths_with_len(X,A,Z,P2,L2) & texted(A,Y,Z2) & (X!=Y) & (Z<Z2) & Y._not_in(P2) & A._not_in(P2) & (P==P2 + [A] + [Z2]) & (L==L2 + 1)
 #paths_with_len(X,Y,Z,P,L) <= paths_with_len(X,A,Z,P2,L2) & called(A,Y,Z2) & (X!=Y) & (Z<Z2) & Y._not_in(P2) & A._not_in(P2) & (P==P2 + [A] + [Z2]) & (L==L2 + 1)
 paths_with_len(X,Y,Z,P,L) <= texted(X,Y,Z) & (P==[]) & (L==0)
 #paths_with_len(X,Y,Z,P,L) <= called(X,Y,Z) & (P==[]) & (L==0)
+"""
+#paths_with_len(X,Y,Z,P,D,L) <= paths_with_len(X,A,Z,P2,D2,L2) & knows(A,Y,Z2) & (Z<Z2) & X._not_in(P2) & Y._not_in(P2) & (X!=Y) & (P==P2 + [A])# & (D==D2 + [Z2])# & (L==L2 + 1)
+#paths_with_len(X,Y,Z,P,D,L) <= knows(X,Y,Z) & (P==[])# & (D==[])# & (L==0)
+
+paths_with_len(X,Y,Z,P,D) <= paths_with_len(X,A,Z2,P2,D2) & knows(A,Y,Z) & (X!=Y) & (Z2>Z) & X._not_in(P2) & Y._not_in(P2) & (P==P2 + [A]) & (D==D2 + [Z])# & (L==L2 + 1)
+paths_with_len(X,Y,Z,P,D) <= knows(X,Y,Z) & (P==[]) & (D==[])# & (L==0)
 
 print("\n\nSuspicious Trace:")
 # ze output
 for i in range(0,len(company_Board)):
     print()
     print(company_Board[i])
-    print(paths_with_len(suspect, company_Board[i], Z, P, L))
+    #print(paths_with_len(suspect, company_Board[i], Z, P, L))
+    print(paths_with_len(suspect, company_Board[i], Z, P, D))#, L))
 
 
 # Final task: after seeing this information, who, if anybody, do you think gave a tip to the suspect?
