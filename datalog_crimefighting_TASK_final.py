@@ -112,8 +112,7 @@ called(X,Y,Z) <= called(Y,X,Z) # calls are bi-directional
 # Hints:
 #   You are allowed to naively compare the dates lexicographically using ">" and "<";
 #   it works in this example (but is evil in general)
-pyDatalog.create_terms('datapath, A, A2, D, D2')
-pyDatalog.create_terms('dated_links, get_dated_paths, PD, PD2')
+pyDatalog.create_terms('get_dated_paths, A, A2, D, D2')
 
 knows(X,Y,D) <= called(X,Y,D)
 knows(X,Y,D) <= texted(X,Y,D)
