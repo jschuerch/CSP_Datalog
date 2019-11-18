@@ -56,11 +56,7 @@ has_link(X, Y) <= knows(X, Z) & has_link(Z, Y) & (X != Y)
 #   (X._not_in(P2)) is used to check whether x is not in path P2
 #   (P==P2+[Z]) declares P as a new path containing P2 and Z
 
-# paths(X,Y,P) <= paths(X,Z,P2) & knows(Z,Y) & (X!=Y) & Z._not_in(P2) & (P==P2 + [Z]) # für paths isch das gange, aber für with len nöd...
-# vode hilfsssite... ?? werum X und Y nöd in P2?? paths(X, Y, P) <= paths(X, Z, P2) & knows(Z, Y) & (X != Y) & (X._not_in(P2)) & (Y._not_in(P2)) & (P == P2 + [Z])
-
-get_all_paths(X, Y, P) <= get_all_paths(X, Z, P2) & knows(Z, Y) & (X != Y) & X._not_in(P2) & Y._not_in(P2) & (
-            P == P2 + [Z])
+get_all_paths(X, Y, P) <= get_all_paths(X, Z, P2) & knows(Z, Y) & (X != Y) & X._not_in(P2) & Y._not_in(P2) & (P == P2 + [Z])
 get_all_paths(X, Y, P) <= knows(X, Y) & (P == [])
 
 ###output
