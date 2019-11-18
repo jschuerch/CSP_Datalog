@@ -2,7 +2,15 @@ Domains angepasst:
 Average time (1000  iterations): 0.020803
 Average time (10000 iterations): 0.018892 seconds
 
+Hardest Sudoku:
+Average time (100 iterations): 1.485958 seconds
+
 Constraints hinzugefügt:
 Average time (1000  iterations): 0.018589
 Average time (10000 iterations): 0.017624 seconds
 
+Hardest Sudoku:
+Average time (100 iterations): 1.193330 seconds
+
+The Hardest Sudoku:
+conceptispuzzles.com/index.aspx?uri=info/article/424
