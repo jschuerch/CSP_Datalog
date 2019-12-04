@@ -99,10 +99,10 @@ date_shares_bought = '23.2.2017'
 pyDatalog.create_terms('called,texted')
 pyDatalog.clear()
 
-for i in range(0,50): # calls
+for i in range(0,150): # calls
     +called(calls.iloc[i,1], calls.iloc[i,2],calls.iloc[i,3])
 
-for i in range(0,50): # texts
+for i in range(0,150): # texts
     +texted(texts.iloc[i,1], texts.iloc[i,2],texts.iloc[i,3])
 
 called(X,Y,Z) <= called(Y,X,Z) # calls are bi-directional
@@ -131,7 +131,7 @@ print("\n\nSuspicious Trace:")
 for i in range(0,len(company_Board)):
     print()
     print(company_Board[i])
-    print(paths_with_len(suspect, company_Board[i], Z, P, L))
+    print(paths_with_len(suspect, company_Board[i], Z, P, L) & (L<=5))
 
 
 # Final task: after seeing this information, who, if anybody, do you think gave a tip to the suspect?

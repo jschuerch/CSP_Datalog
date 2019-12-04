@@ -80,7 +80,7 @@ get_short_paths(X, Y, P, L) <= (get_short_paths(X, Z, P2, L2)
 get_short_paths(X, Y, P, L) <= knows(X, Y) & (P == []) & (L == 0)
 
 ###output
-print(get_short_paths(suspect, X, P, L) & (L <= 5) & (X.in_(company_Board)))
+#print(get_short_paths(suspect, X, P, L) & (L <= 5) & (X.in_(company_Board)))
 
 # ---------------------------------------------------------------------------
 # Call-Data analysis:

@@ -24,7 +24,7 @@ pyDatalog.create_terms('knows','has_link','many_more_needed')
 pyDatalog.clear()
 
 # First, treat calls as simple social links (denoted as knows), that have no date
-for i in range(0,50):
+for i in range(0,150):
     +knows(calls.iloc[i,1], calls.iloc[i,2])
 
 
@@ -82,13 +82,19 @@ pyDatalog.create_terms('paths_with_len, L, L2')
 #paths_with_len(X,Y,P,L) <= knows(X,Y) & paths_with_len(Z,Y,P2,L2) & (X!=Y) & Z._not_in(P2) & (P==[Z] + P2) & (L==L2 + 1) # gaht nöd?? :(
 #paths_with_len(X,Y,P,L) <= paths_with_len(X,Z,P2,L2) & knows(Z,Y) & (X!=Y) & X._not_in(P2) & Y._not_in(P2) & (P==P2 + [Z]) & (L==L2 + 1) # wenis übernimm
 
-paths_with_len(X,Y,P,L) <= paths_with_len(X,Z,P2,L2) & knows(Z,Y) & (X!=Y) & Y._not_in(P2) & Z._not_in(P2) & (P==P2 + [Z]) & (L==L2 + 1)
+#paths_with_len(X,Y,P,L) <= paths_with_len(X,Z,P2,L2) & knows(Z,Y) & (X!=Y) & Y._not_in(P2) & Z._not_in(P2) & (P==P2 + [Z]) & (L==L2 + 1)
+#paths_with_len(X,Y,P,L) <= knows(X,Y) & (P==[]) & (L==0)
+
+
+paths_with_len(X,Y,P,L) <= paths_with_len(X,Z,P2,L2) & knows(Z,Y) & (X!=Y) & X._not_in(P2) & Y._not_in(P2) & (P==P2 + [Z]) & (L==L2 + 1)
 paths_with_len(X,Y,P,L) <= knows(X,Y) & (P==[]) & (L==0)
 
 # ze output
 """for i in range(0,len(company_Board)):
     print(company_Board[i])
     print(paths_with_len(suspect, company_Board[i], P, L) & (L<=5))"""
+#print("paths with length printing...")
+#print(paths_with_len(suspect, X, P, L) & (L<=5) & (X.in_(company_Board)))
 
 # ---------------------------------------------------------------------------
 # Call-Data analysis:

@@ -105,9 +105,21 @@ dated_links(X, Y, D) <= knows(X, Y, D) & (D >= date_board_decision) & (D <= date
 
 
 # Task 6: Find all the communication paths that lead to the suspect (with the restriction that the dates have to be ordered correctly)
-get_dated_paths(X, Y, P, D) <= get_dated_paths(X, Z, P2, D2) & knows(Z, Y, D) & (X != Y) & X._not_in(P2) & Y._not_in(P2) & (P == P2 + [Z,D]) & (D2 > D) & (D >= date_board_decision) & (D <= date_shares_bought)
+get_dated_paths(X, Y, P, D) <= (
+        get_dated_paths(X, Z, P2, D2)
+        & knows(Z, Y, D) & (X != Y)
+        & X._not_in(P2)
+        & Y._not_in(P2)
+        & (P == P2 + [Z,D])
+        & (D2 > D)
+        & (D >= date_board_decision)
+        & (D <= date_shares_bought))
 #get_dated_paths(X, Y, P, D) <= get_dated_paths(X, Z, P2, D) & knows(Z, Y, D2) & (X != Y) & X._not_in(P2) & Y._not_in(P2) & (P == P2 + [Z]) & (D > D2) & (D2 >= date_board_decision) & (D2 <= date_shares_bought)
-get_dated_paths(X, Y, P, D) <= knows(X, Y, D) & (P == []) & (D >= date_board_decision) & (D <= date_shares_bought)
+get_dated_paths(X, Y, P, D) <= (
+        knows(X, Y, D)
+        & (P == [])
+        & (D >= date_board_decision)
+        & (D <= date_shares_bought)
 print(get_dated_paths(suspect, Y, P, D) & Y.in_(company_Board))
 
 
